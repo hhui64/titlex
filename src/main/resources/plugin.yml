@@ -1,0 +1,18 @@
+name: ${name}
+main: ${package}.${name}
+version: ${project.version}
+authors: [Netherfoam, Timtower, KaiNoMood, hhui64]
+
+description: Title plugin
+softdepend: [Essentials, Vault]
+
+commands:
+    ttx:
+        description: TitleX command
+        usage: /ttx
+        aliases: [titlex]
+        
+permissions:
+    titlex.use:
+        description: use
+        default: true
