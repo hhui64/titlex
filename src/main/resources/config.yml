@@ -1,1 +1,28 @@
 version: 1.0
+mysql:
+  use: false
+  host: localhost
+  port: 3306
+  database: titlex
+  user: root
+  password: root
+use-uuid: true
+chest:
+  title: '称号陈列柜'
+  slot: 3
+check:
+  on-join: true
+  on-quit: true
+  on-chat: true
+  on-use-command: true
+title:
+  join: ''
+  extend-prefix: ' '
+  display:
+    tab: false
+    chat: true
+    player: false
+  max-active:
+    default: 3
+    vip: 5
+    more: 10

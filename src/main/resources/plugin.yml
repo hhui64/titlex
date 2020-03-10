@@ -1,18 +1,52 @@
 name: ${name}
 main: ${package}.${name}
 version: ${project.version}
-authors: [Netherfoam, Timtower, KaiNoMood, hhui64]
-
-description: Title plugin
+authors: [hhui64]
+description: Manager Plugin Of Player's Title
 softdepend: [Essentials, Vault]
-
 commands:
     ttx:
-        description: TitleX command
-        usage: /ttx
+        description: TitleX Plugin Command
+        usage: /ttx <list|buy|help|give|remove|clear|refresh|reload> [args]
         aliases: [titlex]
-        
 permissions:
     titlex.use:
-        description: use
+        description: use the player command
         default: true
+        children:
+            titlex.use.list: true
+            titlex.use.shop: true
+            titlex.use.help: true
+    titlex.use.list:
+        description: open the titles manager gui
+        default: true
+    titlex.use.shop:
+        description: open the titles shop
+        default: true
+    titlex.use.help:
+        description: see the helpinfo of plugin
+        default: true
+    titlex.admin:
+        description: admin permissions of plugin
+        default: op
+        children:
+            titlex.admin.give: true
+            titlex.admin.remove: true
+            titlex.admin.clear: true
+            titlex.admin.refresh: true
+            titlex.admin.reload: true
+    titlex.admin.give:
+        description: give title to a player
+        default: op
+    titlex.admin.remove:
+        description: remove a player's title
+        default: op
+    titlex.admin.clear:
+        description: clear a player's all title
+        default: op
+    titlex.admin.refresh:
+        description: refresh all online player's titles
+        default: op
+    titlex.admin.reload:
+        description: reload the config of plugin
+        default: op

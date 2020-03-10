@@ -1,0 +1,28 @@
+mrt:
+  container: '&7&l[&r%s&7&l]'
+  title: '§6名人堂'
+  one-day-price: 500
+  permanent-price: 64800
+  min-date: 1
+  max-date: 30
+zuan:
+  container: '&7&l[&r%s&7&l]'
+  title: '§a祖安狂人'
+  one-day-price: 1288
+  permanent-price: 364800
+  min-date: 1
+  max-date: -1
+yafd:
+  container: '&7&l[&r%s&7&l]'
+  title: '§9用爱发电'
+  one-day-price: -1
+  permanent-price: -1
+  min-date: -1
+  max-date: -1
+test:
+  container: '&7&l[&r%s&7&l]'
+  title: '&c测试称号'
+  one-day-price: 38
+  permanent-price: 3899
+  min-date: 7
+  max-date: 0
