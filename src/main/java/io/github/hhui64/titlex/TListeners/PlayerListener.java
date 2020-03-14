@@ -1,9 +1,7 @@
 package io.github.hhui64.titlex.TListeners;
 
-import java.util.List;
 import java.util.Set;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

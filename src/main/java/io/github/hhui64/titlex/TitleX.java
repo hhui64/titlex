@@ -6,15 +6,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.FileNotFoundException;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import io.github.hhui64.titlex.TCommand.TCommandExecutor;
 import io.github.hhui64.titlex.TConfig.ConfigManager;
-import io.github.hhui64.titlex.TConfig.I18nConfig;
 import io.github.hhui64.titlex.THook.VaultApi;
-import io.github.hhui64.titlex.TItem.Chest;
+import io.github.hhui64.titlex.TItem.ListChest;
 import io.github.hhui64.titlex.TItem.NameTag;
+import io.github.hhui64.titlex.TItem.ShopChest;
 import io.github.hhui64.titlex.TListeners.ChestListener;
 import io.github.hhui64.titlex.TListeners.PlayerListener;
 
@@ -28,8 +25,8 @@ public class TitleX extends JavaPlugin {
 
   public TCommandExecutor tCommandExecutor;
   public ConfigManager configManager;
-  public I18nConfig i18nConfig;
-  public Chest chest;
+  public ListChest listChest;
+  public ShopChest shopChest;
   public NameTag nameTag;
 
   public TitleX() {
@@ -39,6 +36,15 @@ public class TitleX extends JavaPlugin {
   @Override
   public void onLoad() {
     getDataFolder().mkdirs();
+    // 实例化对象
+    configManager = new ConfigManager();
+    // 载入配置
+    try {
+      configManager.load();
+      loadClass();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -57,15 +63,6 @@ public class TitleX extends JavaPlugin {
     // 注册监听器
     pluginManager.registerEvents(new ChestListener(), this);
     pluginManager.registerEvents(new PlayerListener(), this);
-    // 实例化对象
-    configManager = new ConfigManager();
-    // 载入配置
-    try {
-      configManager.load();
-      loadClass();
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
@@ -74,10 +71,10 @@ public class TitleX extends JavaPlugin {
   }
 
   public void loadClass() {
-    // FileConfiguration config = getConfig();
-    i18nConfig = new I18nConfig();
-    chest = new Chest(getConfig().getConfigurationSection("chest").getString("title"),
-        getConfig().getConfigurationSection("chest").getInt("slot"));
+    listChest = new ListChest(configManager.getMessage("list-chest"),
+        getConfig().getConfigurationSection("list-chest").getInt("slot"));
+    shopChest = new ShopChest(configManager.getMessage("shop-chest"),
+        getConfig().getConfigurationSection("shop-chest").getInt("slot"));
     nameTag = new NameTag();
   }
 }

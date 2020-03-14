@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -25,6 +24,7 @@ public class ConfigManager {
   public FileConfiguration config;
   public FileConfiguration save;
   public FileConfiguration titles;
+  public FileConfiguration messages;
 
   public void load() throws FileNotFoundException {
     TitleX.instance.saveDefaultConfig();
@@ -44,6 +44,7 @@ public class ConfigManager {
     config = getFileConfiguration();
     save = getYamlConfiguration(TitleX.instance.getDataFolder(), "save.yml");
     titles = getYamlConfiguration(TitleX.instance.getDataFolder(), "titles.yml");
+    messages = getYamlConfiguration(TitleX.instance.getDataFolder(), "messages.yml");
   }
 
   /**
@@ -65,7 +66,6 @@ public class ConfigManager {
   public void saveAllPlayerData() {
     TitleX.instance.getLogger().info("Saving data for all players...");
     try {
-      // config.save(new File(TitleX.instance.getDataFolder(), "titles.yml"));
       titles.save(new File(TitleX.instance.getDataFolder(), "titles.yml"));
       save.save(new File(TitleX.instance.getDataFolder(), "save.yml"));
       TitleX.instance.getLogger().info("Save succeeded.");
@@ -183,10 +183,12 @@ public class ConfigManager {
     List<String> titles = new ArrayList<String>(0);
     // 获取玩家有的称号牌
     for (String titleId : getPlayerTitles(player)) {
+      // ConfigurationSection playerTitle = getPlayerTitleConfigurationSection(player,
+      // titleId);
       // 判断时效是否有效（过期）
       if (getPlayerTitleTimeStatus(player, titleId)) {
         // 判断是否佩戴
-        if (getPlayerTitleActiveStatus(player, titleId)) {
+        if (getPlayerTitleActiveStatus(player, titleId) || getPlayerTitleForceActiveStatus(player, titleId)) {
           ConfigurationSection titleC = getTitle(titleId);
           String container = titleC.getString("container");
           String title = titleC.getString("title");
@@ -232,6 +234,18 @@ public class ConfigManager {
   public boolean getPlayerTitleActiveStatus(Player player, String titleId) {
     ConfigurationSection c = getPlayerTitleConfigurationSection(player, titleId);
     return c.getBoolean("use");
+  }
+
+  /**
+   * 获取指定玩家的指定称号ID的 force-use 状态（是否强制佩戴）
+   * 
+   * @param player
+   * @param titleId
+   * @return
+   */
+  public boolean getPlayerTitleForceActiveStatus(Player player, String titleId) {
+    ConfigurationSection c = getPlayerTitleConfigurationSection(player, titleId);
+    return c.getBoolean("force-use");
   }
 
   /**
@@ -323,5 +337,13 @@ public class ConfigManager {
       TitleX.instance.vaultApi.chat.setPlayerPrefix(player, getPlayerActiveTitles(player));
     } catch (Exception e) {
     }
+  }
+
+  public String getMessage(String key, Object... format) {
+    return format.length > 0 ? String.format(messages.getString(key), format) : messages.getString(key);
+  }
+
+  public String[] getMessageList(String key) {
+    return messages.getList(key).toArray(new String[0]);
   }
 }

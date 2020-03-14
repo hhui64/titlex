@@ -1,37 +1,17 @@
 package io.github.hhui64.titlex.TCommand;
 
-import java.io.Console;
-import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.Material;
 
 import io.github.hhui64.titlex.TitleX;
-import io.github.hhui64.titlex.TItem.Chest;
 
 public class TCommandExecutor implements TabExecutor {
   public final String COMMAND_NAME = "ttx";
@@ -52,7 +32,7 @@ public class TCommandExecutor implements TabExecutor {
           case "shop":
             if (!checkPermission(player, "titlex.use.shop"))
               return true;
-            // ...
+            shop(player);
             return true;
           case "help":
             if (!checkPermission(player, "titlex.use.help"))
@@ -126,12 +106,7 @@ public class TCommandExecutor implements TabExecutor {
   }
 
   private void sendHelpMessage(CommandSender sender) {
-    String[] msg = { "§6================== 称号系统 BY HUANGHU1 ==================", "§e/ttx list  §7-  §f打开称号陈列柜",
-        "§e/ttx shop  §7-  §f打开称号商城", "§e/ttx help  §7-  §f查看指令帮助内容",
-        "§e/ttx give <玩家名> <称号ID> [天数]  §7-  §f授予玩家指定称号ID", "§e/ttx remove <玩家名> <称号ID>  §7-  §f移除玩家指定称号ID",
-        "§e/ttx clear <玩家名>  §7-  §f清除玩家的所有称号", "§e/ttx refresh [玩家名]  §7-  §f刷新指定玩家或所有玩家的称号",
-        "§e/ttx reload  §7-  §f重新加载插件", "§6===========================================================", };
-    sender.sendMessage(msg);
+    sender.sendMessage(TitleX.instance.configManager.getMessageList("help"));
   }
 
   @Override
@@ -144,17 +119,6 @@ public class TCommandExecutor implements TabExecutor {
       return Arrays.stream(subCommands).filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
     // give, remove, clear 子命令补全玩家名称，各自所需的参数名称等
     if (args.length >= 2 && args.length <= 4) {
-      // 管理指令第二参统一为玩家名称补全
-      // if (args.length == 2 && (args[0].equals("give") || args[0].equals("remove")
-      // || args[0].equals("clear"))) {
-      // // 判断是在控制台操作，返回服务器内游戏过的玩家
-      // if (!(sender instanceof Player)) {
-      // OfflinePlayer[] offlinePlayers = Bukkit.getOfflinePlayers();
-      // return Arrays.asList(offlinePlayers).stream().map(player -> player.getName())
-      // .filter(playerName ->
-      // playerName.startsWith(args[1])).collect(Collectors.toList());
-      // }
-      // }
       // give 第三个参数补全 titles list
       if (args.length == 3 && args[0].equals("give")) {
         List<String> titles = new ArrayList<>(TitleX.instance.configManager.getTitles());
@@ -180,22 +144,32 @@ public class TCommandExecutor implements TabExecutor {
     return null;
   }
 
+  /**
+   * 检查玩家是否存在或是否拥有权限
+   * @param sender
+   * @param p
+   * @return
+   */
   private boolean checkPermission(CommandSender sender, String p) {
     boolean r = (sender instanceof Player) ? TitleX.instance.vaultApi.permission.playerHas((Player) sender, p) : true;
     if ((sender instanceof Player)) {
       if (!(((Player) sender).isOnline())) {
-        sender.sendMessage("§c玩家不存在或已离线");
+        sender.sendMessage(TitleX.instance.configManager.getMessage("no-player"));
         return false;
       }
     }
     if (!r) {
-      sender.sendMessage("§c你没有权限这样做");
+      sender.sendMessage(TitleX.instance.configManager.getMessage("no-permission"));
     }
     return r;
   }
 
   private void list(Player player) {
-    TitleX.instance.chest.openChest(player);
+    TitleX.instance.listChest.open(player);
+  }
+
+  private void shop(Player player) {
+    TitleX.instance.shopChest.open(player);
   }
 
   private void give(CommandSender sender, String playerName, String titleId, String time) {
@@ -205,19 +179,20 @@ public class TCommandExecutor implements TabExecutor {
     if (player != null && player.isOnline()) {
       if (TitleX.instance.configManager.hasTitle(titleId)) {
         try {
-          int t = time == "-1" ? -1 : Integer.parseInt(time) * 24 * 60 * 60;
+          int t = Integer.parseInt(time);
+          t = t < 0 ? -1 : t * 24 * 60 * 60;
           TitleX.instance.configManager.addPlayerTitle(player, titleId, t);
           TitleX.instance.configManager.saveConfig();
-          sender.sendMessage("§a成功将称号 " + titleId + " 添加至玩家 " + playerName + " 的库存中 (" + time + "天)");
-          player.sendMessage("§a你被授予了一个称号，请打开称号陈列柜佩戴吧！");
+          sender.sendMessage(TitleX.instance.configManager.getMessage("give-success", titleId, playerName, t));
+          player.sendMessage(TitleX.instance.configManager.getMessage("get-title"));
         } catch (NumberFormatException e) {
-          sender.sendMessage("§c请输入正确的天数");
+          sender.sendMessage(TitleX.instance.configManager.getMessage("invalid-date"));
         }
       } else {
-        sender.sendMessage("§c称号库中没有这个称号ID");
+        sender.sendMessage(TitleX.instance.configManager.getMessage("no-title"));
       }
     } else {
-      sender.sendMessage("§c玩家不存在或已离线");
+      sender.sendMessage(TitleX.instance.configManager.getMessage("no-player"));
     }
   }
 
@@ -232,12 +207,12 @@ public class TCommandExecutor implements TabExecutor {
         TitleX.instance.configManager.saveConfig();
         // 刷新可用称号生成聊天前缀并设置
         TitleX.instance.configManager.setPlayerActiveTitlesToChatPrefix(player);
-        sender.sendMessage("§a成功将称号ID " + titleId + " 从玩家 " + playerName + " 的库存中移除");
+        sender.sendMessage(TitleX.instance.configManager.getMessage("remove-success", titleId, playerName));
       } else {
-        sender.sendMessage("§c该玩家库存中没有这个称号ID");
+        sender.sendMessage(TitleX.instance.configManager.getMessage("player-no-title"));
       }
     } else {
-      sender.sendMessage("§c玩家不存在或已离线");
+      sender.sendMessage(TitleX.instance.configManager.getMessage("no-player"));
     }
   }
 
@@ -250,20 +225,20 @@ public class TCommandExecutor implements TabExecutor {
       TitleX.instance.configManager.saveConfig();
       // 清空前缀内容
       TitleX.instance.vaultApi.chat.setPlayerPrefix(player, null);
-      sender.sendMessage("§a成功清除玩家 " + playerName + " 的所有称号库存");
+      sender.sendMessage(TitleX.instance.configManager.getMessage("clear-success", playerName));
     } else {
-      sender.sendMessage("§c玩家不存在或已离线");
+      sender.sendMessage(TitleX.instance.configManager.getMessage("no-player"));
     }
   }
 
   private void refresh(CommandSender sender) {
-    sender.sendMessage("§e正在刷新所有玩家的称号...");
-    sender.sendMessage("§a刷新成功");
+    sender.sendMessage(TitleX.instance.configManager.getMessage("refreshing"));
+    sender.sendMessage(TitleX.instance.configManager.getMessage("refreshing-success"));
   }
 
   private void reload(CommandSender sender) {
-    sender.sendMessage("§e正在重新载入插件...");
+    sender.sendMessage(TitleX.instance.configManager.getMessage("reloading"));
     TitleX.instance.configManager.reload();
-    sender.sendMessage("§a重新载入成功");
+    sender.sendMessage(TitleX.instance.configManager.getMessage("reloading-success"));
   }
 }

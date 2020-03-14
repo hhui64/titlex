@@ -1,4 +1,6 @@
+# 配置文件版本，请勿修改
 version: 1.0
+# MySQL 数据库设置
 mysql:
   use: false
   host: localhost
@@ -6,22 +8,36 @@ mysql:
   database: titlex
   user: root
   password: root
+# 是否使用 uuid
 use-uuid: true
-chest:
-  title: '称号陈列柜'
+# 箱子容器设置
+list-chest:
   slot: 3
+shop-chest:
+  slot: 3
+# 检查设置
 check:
+  # 进入服务器时检查
   on-join: true
+  # 退出服务器时检查
   on-quit: true
+  # 发送聊天时检查
   on-chat: true
-  on-use-command: true
+# 称号设置
 title:
+  # 称号拼接之间的连接字符
   join: ''
+  # 称号拼接完成后，结尾添加的扩展字符
   extend-prefix: ' '
+  # 称号显示设置
   display:
+    # TAB 列表
     tab: false
+    # 聊天前缀
     chat: true
+    # 玩家头顶
     player: false
+  # 最大可以佩戴的称号数量 titlex.max-active.<group>
   max-active:
     default: 3
     vip: 5
