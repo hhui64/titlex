@@ -17,7 +17,7 @@ import io.github.hhui64.titlex.TitleX;
 public class ChestListener implements Listener {
   @EventHandler
   public void onInventoryOpen(InventoryOpenEvent event) {
-    event.setCancelled(false);
+    // TODO: some...
   }
 
   @EventHandler
@@ -45,7 +45,6 @@ public class ChestListener implements Listener {
         }
       }
     }
-    event.setCancelled(false);
   }
 
   @EventHandler
@@ -63,7 +62,6 @@ public class ChestListener implements Listener {
         }
       }
     }
-    event.setCancelled(false);
   }
 
   /**
