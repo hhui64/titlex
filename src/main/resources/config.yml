@@ -1,5 +1,5 @@
 # 配置文件版本，请勿修改
-version: 1.0
+version: 1.1
 # MySQL 数据库设置
 mysql:
   use: false
@@ -23,6 +23,8 @@ check:
   on-quit: true
   # 发送聊天时检查
   on-chat: true
+  # 切换世界时检查
+  on-player-change-world: true
 # 称号设置
 title:
   # 称号拼接之间的连接字符
