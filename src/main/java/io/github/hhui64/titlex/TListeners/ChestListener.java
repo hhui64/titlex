@@ -29,10 +29,10 @@ public class ChestListener implements Listener {
         if (event.getRawSlot() < inventory.getSize()) {
           ItemStack currentItem = event.getCurrentItem();
           if (currentItem != null && currentItem.getType() == Material.NAME_TAG) {
-            if (inventory.getTitle() == TitleX.instance.configManager.getMessage("list-chest")) {
+            if (inventory.getTitle().equalsIgnoreCase(TitleX.instance.configManager.getMessage("list-chest"))) {
               TitleX.instance.listChest.nameTagClick(player, inventory, currentItem, event.getClick());
             }
-            if (inventory.getTitle() == TitleX.instance.configManager.getMessage("shop-chest")) {
+            if (inventory.getTitle().equalsIgnoreCase(TitleX.instance.configManager.getMessage("shop-chest"))) {
               // TODO: shop chest item click
             }
           }
@@ -51,11 +51,9 @@ public class ChestListener implements Listener {
   public void onInventoryDrag(InventoryDragEvent event) {
     Inventory inventory = event.getInventory();
     if (isTitleChest(inventory)) {
-      Player player = (Player) event.getWhoClicked();
-      if (player instanceof Player) {
-        Set<Integer> rawSlots = event.getRawSlots();
+      if (event.getWhoClicked() instanceof Player) {
         for (int i = 0; i < inventory.getSize(); i++) {
-          if (rawSlots.contains(i)) {
+          if (event.getRawSlots().contains(i)) {
             event.setCancelled(true);
             return;
           }
