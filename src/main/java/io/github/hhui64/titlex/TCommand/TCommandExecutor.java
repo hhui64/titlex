@@ -48,16 +48,13 @@ public class TCommandExecutor implements TabExecutor {
         case "give":
           if (!checkPermission(sender, "titlex.admin.give"))
             return true;
-          if (args.length == 3 || args.length == 4) {
-            String t;
-            if (args.length == 3) {
-              t = "-1";
-            } else {
-              t = args[3];
-            }
-            give(sender, args[1], args[2], t);
+          if (args.length >= 3 && args.length <= 5) {
+            String t = args.length == 3 ? "-1" : args[3];
+            boolean isForceUse = args.length >= 5 && (args[4].equalsIgnoreCase(
+                "true") || args[4].equalsIgnoreCase("t")) ? true : false; 
+            give(sender, args[1], args[2], t, isForceUse);
           } else {
-            sender.sendMessage("§e用法: /ttx give <玩家名> <称号ID> [天数]");
+            sender.sendMessage("§e用法: /ttx give <玩家名> <称号ID> [天数] [是否强制佩戴]");
           }
           break;
         case "remove":
@@ -119,27 +116,41 @@ public class TCommandExecutor implements TabExecutor {
       return Arrays.stream(subCommands).filter(s -> s.startsWith(args[0])).collect(Collectors.toList());
     // give, remove, clear 子命令补全玩家名称，各自所需的参数名称等
     if (args.length >= 2 && args.length <= 4) {
-      // give 第三个参数补全 titles list
-      if (args.length == 3 && args[0].equals("give")) {
-        List<String> titles = new ArrayList<>(TitleX.instance.configManager.getTitles());
-        return titles.stream().filter(title -> title.startsWith(args[2])).collect(Collectors.toList());
-      }
-      // give 第四参数补全数字
-      if (args.length == 4 && args[0].equals("give")) {
-        String[] num = { "1", "3", "7", "15", "30", "-1" };
-        return Arrays.asList(num);
-      }
-      // remove 第三参数 根据第二参数 player 补全 title list
-      if (args.length == 3 && args[0].equals("remove")) {
-        if (args[1] == null)
-          return null;
-        Player player = Bukkit.getPlayerExact(args[1]);
-        if (player != null && player.isOnline()) {
-          // String uuid = player.getUniqueId().toString();
-          List<String> titles = new ArrayList<>(TitleX.instance.configManager.getPlayerTitles(player));
+
+      // give 指令补全
+      if (args[0].equals("give")) {
+        // 第三个参数补全 titles list
+        if (args.length == 3) {
+          List<String> titles = new ArrayList<>(TitleX.instance.configManager.getTitles());
           return titles.stream().filter(title -> title.startsWith(args[2])).collect(Collectors.toList());
         }
+        // 第四参数补全数字
+        if (args.length == 4) {
+          String[] num = { "1", "3", "7", "15", "30", "-1" };
+          return Arrays.asList(num);
+        }
+        // 第五参数补全 Boolean 值
+        if (args.length == 5) {
+          String[] booleanString = { "true", "false", "t", "f" };
+          return Arrays.asList(booleanString);
+        }
       }
+
+      // remove 指令补全
+      if (args[0].equals("remove")) {
+        // 第三参数 根据第二参数 player 补全 title list
+        if (args.length == 3) {
+          if (args[1] == null)
+            return null;
+          Player player = Bukkit.getPlayerExact(args[1]);
+          if (player != null && player.isOnline()) {
+            // String uuid = player.getUniqueId().toString();
+            List<String> titles = new ArrayList<>(TitleX.instance.configManager.getPlayerTitles(player));
+            return titles.stream().filter(title -> title.startsWith(args[2])).collect(Collectors.toList());
+          }
+        }
+      }
+
     }
     return null;
   }
@@ -172,7 +183,7 @@ public class TCommandExecutor implements TabExecutor {
     TitleX.instance.shopChest.open(player);
   }
 
-  private void give(CommandSender sender, String playerName, String titleId, String time) {
+  private void give(CommandSender sender, String playerName, String titleId, String time, boolean isForceUse) {
     if (playerName == null)
       return;
     Player player = Bukkit.getPlayerExact(playerName);
@@ -181,9 +192,9 @@ public class TCommandExecutor implements TabExecutor {
         try {
           int t = Integer.parseInt(time);
           t = t < 0 ? -1 : t * 24 * 60 * 60;
-          TitleX.instance.configManager.addPlayerTitle(player, titleId, t);
+          TitleX.instance.configManager.addPlayerTitle(player, titleId, t, isForceUse);
           TitleX.instance.configManager.saveConfig();
-          sender.sendMessage(TitleX.instance.configManager.getMessage("give-success", titleId, playerName, t));
+          sender.sendMessage(TitleX.instance.configManager.getMessage("give-success", titleId, playerName, t, isForceUse));
           player.sendMessage(TitleX.instance.configManager.getMessage("get-title"));
         } catch (NumberFormatException e) {
           sender.sendMessage(TitleX.instance.configManager.getMessage("invalid-date"));

@@ -55,22 +55,22 @@ public class ListChest extends Chest {
       return;
 
     // 获取该称号佩戴状态
-    boolean forceUse = TitleX.instance.configManager.getPlayerTitleForceActiveStatus(player, titleId);
-    boolean use = TitleX.instance.configManager.getPlayerTitleActiveStatus(player, titleId);
+    boolean isForceUse = playerTitle.getBoolean("force-use");
+    boolean isUse = playerTitle.getBoolean("use");
 
     // 判断是否强制佩戴，如果为强制佩戴则不修改称号 use 状态
-    if (!forceUse) {
+    if (!isForceUse) {
       // 根据 lore 的 id 获取该称号ID在玩家库存中的状态信息
-      boolean status = TitleX.instance.configManager.getPlayerTitleTimeStatus(player, titleId);
+      boolean timeStatus = TitleX.instance.configManager.getPlayerTitleTimeStatus(player, titleId);
 
       // 过期了则不执行后续佩戴操作，直接返回，并从玩家库存中删除称号ID节点。
-      if (!status) {
+      if (!timeStatus) {
         TitleX.instance.configManager.delPlayerTitle(player, titleId);
         return;
       }
 
       // 佩戴该称号，保存配置
-      TitleX.instance.configManager.changePlayerTitleConfig(player, titleId, "use", !use);
+      TitleX.instance.configManager.changePlayerTitleConfig(player, titleId, "use", !isUse);
       TitleX.instance.configManager.saveConfig();
 
       // 重新载入容器
@@ -79,6 +79,8 @@ public class ListChest extends Chest {
 
     // 设置玩家聊天前缀，此时称号正式生效
     TitleX.instance.configManager.setPlayerActiveTitlesToChatPrefix(player);
+
+    // 发送公屏佩戴提示
     // player.sendMessage(!use ? ("§e你现在戴上了 §r" + title + "§r§e 称号") : ("§7你摘下了 §r"
     // + title + "§r§7 称号"));
   }
@@ -112,26 +114,26 @@ public class ListChest extends Chest {
             titleId);
         // 判断是否获取成功，且称号没过期
         if (playerTitle != null && TitleX.instance.configManager.getPlayerTitleTimeStatus(player, titleId)) {
+          // 获取佩戴状态
+          boolean isForceUse = playerTitle.getBoolean("force-use");
+          boolean isUse = playerTitle.getBoolean("use");
           // 计算到期时间
           int now = (int) Math.ceil(System.currentTimeMillis() / 1000);
           int exp = playerTitle.getInt("exp");
           int at = (int) Math.ceil((double) ((double) (exp - now) / (double) 60 / (double) 60 / (double) 24));
-          // 获取佩戴状态
-          boolean use = playerTitle.getBoolean("use");
-          boolean forceUse = playerTitle.getBoolean("force-use");
           // 添加 lore 信息
           String dateMsg = exp < 0 ? TitleX.instance.configManager.getMessage("is-long")
               : (exp < now ? TitleX.instance.configManager.getMessage("is-exp")
                   : TitleX.instance.configManager.getMessage("is-day", String.valueOf(at)));
           lore.add(TitleX.instance.configManager.getMessage("date", dateMsg));
           lore.add(" ");
-          if (forceUse) {
+          if (isForceUse) {
             lore.add(TitleX.instance.configManager.getMessage("is-force-use"));
-          } else if (use) {
+          } else if (isUse) {
             lore.add(TitleX.instance.configManager.getMessage("is-use"));
           }
           lore.add("§7id:" + titleId);
-          list.add(TitleX.instance.nameTag.create(name, lore, forceUse || use));
+          list.add(TitleX.instance.nameTag.create(name, lore, isForceUse || isUse));
         }
       }
     }
