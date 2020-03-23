@@ -6,6 +6,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import io.github.hhui64.titlex.TitleX;
 
+@Deprecated
 public class PlayerEffect extends BukkitRunnable {
   private Player player;
   private double degree = 0;

@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -197,17 +198,19 @@ public class ConfigManager {
         }
       }
     }
-    String extendString = "";
+
     if (!titles.isEmpty()) {
       // 获取玩家主用户组的前缀，添加在称号牌子后面
       String groupPrefix = TitleX.instance.vaultApi.chat.getGroupPrefix(player.getWorld(),
           TitleX.instance.vaultApi.permission.getPrimaryGroup(player));
-      extendString = "§r" + TitleX.instance.getConfig().getConfigurationSection("title").getString("extend-prefix")
+      String extendPrefix = "§r" + TitleX.instance.getConfig().getConfigurationSection("title").getString("extend-prefix")
           + groupPrefix;
+      // 将所有称号连接起来
+      return String.join("§r" + TitleX.instance.getConfig().getConfigurationSection("title").getString("join"), titles)
+          + extendPrefix;
     }
-    // 将所有称号连接起来
-    return String.join("§r" + TitleX.instance.getConfig().getConfigurationSection("title").getString("join"), titles)
-        + extendString;
+
+    return "";
   }
 
   /**
@@ -293,11 +296,12 @@ public class ConfigManager {
    * @param titleId
    * @param time    时间(单位: 秒)，如果 <= -1 则为永久
    */
-  public void addPlayerTitle(Player player, String titleId, int time) {
+  public void addPlayerTitle(Player player, String titleId, int time, boolean isForceUse) {
     String uuid = player.getUniqueId().toString();
     ConfigurationSection configurationSection = save.createSection(uuid + ".titles." + titleId);
     int nowTime = (int) (System.currentTimeMillis() / 1000);
     int expTime = time <= -1 ? -1 : (nowTime + time);
+    configurationSection.set("force-use", isForceUse);
     configurationSection.set("use", false);
     configurationSection.set("iat", nowTime);
     configurationSection.set("exp", expTime);
@@ -336,11 +340,12 @@ public class ConfigManager {
     try {
       TitleX.instance.vaultApi.chat.setPlayerPrefix(player, getPlayerActiveTitles(player));
     } catch (Exception e) {
+      // player.sendMessage(getMessage("failed-to-set-player-prefix"));
     }
   }
 
   public String getMessage(String key, Object... format) {
-    return format.length > 0 ? String.format(messages.getString(key), format) : messages.getString(key);
+    return ChatColor.translateAlternateColorCodes('&' ,format.length > 0 ? String.format(messages.getString(key), format) : messages.getString(key));
   }
 
   public String[] getMessageList(String key) {
