@@ -36,12 +36,11 @@ public class TitleX extends JavaPlugin {
   @Override
   public void onLoad() {
     getDataFolder().mkdirs();
-    // 实例化对象
-    configManager = new ConfigManager();
-    // 载入配置
     try {
-      configManager.load();
-      loadClass();
+      // 载入配置
+      ConfigManager.init();
+      // 实例化对象
+      init();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
@@ -51,8 +50,7 @@ public class TitleX extends JavaPlugin {
   public void onEnable() {
     // Hook vault-api
     getLogger().info("Hooking vault-api...");
-    vaultApi = new VaultApi();
-    if (vaultApi.init()) {
+    if (VaultApi.init()) {
       getLogger().info("Succeeded to hook vault-api.");
     } else {
       getLogger().info("Failed to hook vault-api! is installed?");
@@ -67,13 +65,17 @@ public class TitleX extends JavaPlugin {
 
   @Override
   public void onDisable() {
-    configManager.saveAllPlayerData();
+    ConfigManager.saveAllData();
   }
 
-  public void loadClass() {
-    listChest = new ListChest(configManager.getMessage("list-chest"),
+  /**
+   * 初始化实例化对象
+   */
+  public void init() {
+    listChest = new ListChest(ConfigManager.getMessage("list-chest"),
         getConfig().getConfigurationSection("list-chest").getInt("slot"));
-    shopChest = new ShopChest(configManager.getMessage("shop-chest"),
+    shopChest = new ShopChest(
+        ConfigManager.getMessage("shop-chest"),
         getConfig().getConfigurationSection("shop-chest").getInt("slot"));
     nameTag = new NameTag();
   }

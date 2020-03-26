@@ -12,6 +12,10 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import io.github.hhui64.titlex.TitleX;
+import io.github.hhui64.titlex.TConfig.ConfigManager;
+import io.github.hhui64.titlex.THook.VaultApi;
+import io.github.hhui64.titlex.Ttitle.LocalTitleManager;
+import io.github.hhui64.titlex.Ttitle.PlayerTitleManager;
 
 public class TCommandExecutor implements TabExecutor {
   public final String COMMAND_NAME = "ttx";
@@ -103,7 +107,7 @@ public class TCommandExecutor implements TabExecutor {
   }
 
   private void sendHelpMessage(CommandSender sender) {
-    sender.sendMessage(TitleX.instance.configManager.getMessageList("help"));
+    sender.sendMessage(ConfigManager.getMessageList("help"));
   }
 
   @Override
@@ -121,7 +125,7 @@ public class TCommandExecutor implements TabExecutor {
       if (args[0].equals("give")) {
         // 第三个参数补全 titles list
         if (args.length == 3) {
-          List<String> titles = new ArrayList<>(TitleX.instance.configManager.getTitles());
+          List<String> titles = new ArrayList<>(LocalTitleManager.getAllLocalTitlesIdSet());
           return titles.stream().filter(title -> title.startsWith(args[2])).collect(Collectors.toList());
         }
         // 第四参数补全数字
@@ -144,8 +148,7 @@ public class TCommandExecutor implements TabExecutor {
             return null;
           Player player = Bukkit.getPlayerExact(args[1]);
           if (player != null && player.isOnline()) {
-            // String uuid = player.getUniqueId().toString();
-            List<String> titles = new ArrayList<>(TitleX.instance.configManager.getPlayerTitles(player));
+            List<String> titles = new ArrayList<>(PlayerTitleManager.getPlayerAllTitlesIdSet(player));
             return titles.stream().filter(title -> title.startsWith(args[2])).collect(Collectors.toList());
           }
         }
@@ -162,15 +165,15 @@ public class TCommandExecutor implements TabExecutor {
    * @return
    */
   private boolean checkPermission(CommandSender sender, String p) {
-    boolean r = (sender instanceof Player) ? TitleX.instance.vaultApi.permission.playerHas((Player) sender, p) : true;
+    boolean r = (sender instanceof Player) ? VaultApi.permission.playerHas((Player) sender, p) : true;
     if ((sender instanceof Player)) {
       if (!(((Player) sender).isOnline())) {
-        sender.sendMessage(TitleX.instance.configManager.getMessage("no-player"));
+        sender.sendMessage(ConfigManager.getMessage("no-player"));
         return false;
       }
     }
     if (!r) {
-      sender.sendMessage(TitleX.instance.configManager.getMessage("no-permission"));
+      sender.sendMessage(ConfigManager.getMessage("no-permission"));
     }
     return r;
   }
@@ -183,47 +186,46 @@ public class TCommandExecutor implements TabExecutor {
     TitleX.instance.shopChest.open(player);
   }
 
-  private void give(CommandSender sender, String playerName, String titleId, String time, boolean isForceUse) {
+  private void give(CommandSender sender, String playerName, String id, String days, boolean isForceUse) {
     if (playerName == null)
       return;
     Player player = Bukkit.getPlayerExact(playerName);
     if (player != null && player.isOnline()) {
-      if (TitleX.instance.configManager.hasTitle(titleId)) {
+      if (LocalTitleManager.getLocalTitle(id) != null) {
         try {
-          int t = Integer.parseInt(time);
-          t = t < 0 ? -1 : t * 24 * 60 * 60;
-          TitleX.instance.configManager.addPlayerTitle(player, titleId, t, isForceUse);
-          TitleX.instance.configManager.saveConfig();
-          sender.sendMessage(TitleX.instance.configManager.getMessage("give-success", titleId, playerName, t, isForceUse));
-          player.sendMessage(TitleX.instance.configManager.getMessage("get-title"));
+          int intDays = Integer.parseInt(days);
+          PlayerTitleManager.addPlayerCurrentTitle(player, id, intDays, isForceUse, false);
+          ConfigManager.savePlayerData();
+          sender.sendMessage(ConfigManager.getMessage("give-success", id, playerName, intDays, isForceUse));
+          player.sendMessage(ConfigManager.getMessage("get-title"));
         } catch (NumberFormatException e) {
-          sender.sendMessage(TitleX.instance.configManager.getMessage("invalid-date"));
+          sender.sendMessage(ConfigManager.getMessage("invalid-date"));
         }
       } else {
-        sender.sendMessage(TitleX.instance.configManager.getMessage("no-title"));
+        sender.sendMessage(ConfigManager.getMessage("no-title"));
       }
     } else {
-      sender.sendMessage(TitleX.instance.configManager.getMessage("no-player"));
+      sender.sendMessage(ConfigManager.getMessage("no-player"));
     }
   }
 
-  private void remove(CommandSender sender, String playerName, String titleId) {
+  private void remove(CommandSender sender, String playerName, String id) {
     if (playerName == null)
       return;
     Player player = Bukkit.getPlayerExact(playerName);
     if (player != null && player.isOnline()) {
-      if (TitleX.instance.configManager.playerHasTitle(player, titleId)) {
-        // 从配置文件中删除
-        TitleX.instance.configManager.delPlayerTitle(player, titleId);
-        TitleX.instance.configManager.saveConfig();
+      if (PlayerTitleManager.getPlayerCurrentTitle(player, id) != null) {
+        // 从配置文件中删除，并保存
+        PlayerTitleManager.delPlayerCurrentTitle(player, id);
+        ConfigManager.savePlayerData();
         // 刷新可用称号生成聊天前缀并设置
-        TitleX.instance.configManager.setPlayerActiveTitlesToChatPrefix(player);
-        sender.sendMessage(TitleX.instance.configManager.getMessage("remove-success", titleId, playerName));
+        PlayerTitleManager.updatePlayerPrefix(player);
+        sender.sendMessage(ConfigManager.getMessage("remove-success", id, playerName));
       } else {
-        sender.sendMessage(TitleX.instance.configManager.getMessage("player-no-title"));
+        sender.sendMessage(ConfigManager.getMessage("player-no-title"));
       }
     } else {
-      sender.sendMessage(TitleX.instance.configManager.getMessage("no-player"));
+      sender.sendMessage(ConfigManager.getMessage("no-player"));
     }
   }
 
@@ -232,24 +234,24 @@ public class TCommandExecutor implements TabExecutor {
       return;
     Player player = Bukkit.getPlayerExact(playerName);
     if (player != null && player.isOnline()) {
-      TitleX.instance.configManager.clearPlayerTitle(player);
-      TitleX.instance.configManager.saveConfig();
+      PlayerTitleManager.clearPlayerAllTitles(player);
+      ConfigManager.savePlayerData();
       // 清空前缀内容
-      TitleX.instance.vaultApi.chat.setPlayerPrefix(player, null);
-      sender.sendMessage(TitleX.instance.configManager.getMessage("clear-success", playerName));
+      VaultApi.chat.setPlayerPrefix(player, null);
+      sender.sendMessage(ConfigManager.getMessage("clear-success", playerName));
     } else {
-      sender.sendMessage(TitleX.instance.configManager.getMessage("no-player"));
+      sender.sendMessage(ConfigManager.getMessage("no-player"));
     }
   }
 
   private void refresh(CommandSender sender) {
-    sender.sendMessage(TitleX.instance.configManager.getMessage("refreshing"));
-    sender.sendMessage(TitleX.instance.configManager.getMessage("refreshing-success"));
+    sender.sendMessage(ConfigManager.getMessage("refreshing"));
+    sender.sendMessage(ConfigManager.getMessage("refreshing-success"));
   }
 
   private void reload(CommandSender sender) {
-    sender.sendMessage(TitleX.instance.configManager.getMessage("reloading"));
-    TitleX.instance.configManager.reload();
-    sender.sendMessage(TitleX.instance.configManager.getMessage("reloading-success"));
+    sender.sendMessage(ConfigManager.getMessage("reloading"));
+    ConfigManager.reloadConfig();
+    sender.sendMessage(ConfigManager.getMessage("reloading-success"));
   }
 }

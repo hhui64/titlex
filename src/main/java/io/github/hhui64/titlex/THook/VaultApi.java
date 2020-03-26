@@ -8,11 +8,11 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 public class VaultApi {
-  public Permission permission = null;
-  public Economy economy = null;
-  public Chat chat = null;
+  public static Permission permission = null;
+  public static Economy economy = null;
+  public static Chat chat = null;
 
-  public boolean init() {
+  public static boolean init() {
     // 获取权限系统实例
     RegisteredServiceProvider<Permission> permissionProvider = TitleX.instance.servicesManager
         .getRegistration(net.milkbowl.vault.permission.Permission.class);

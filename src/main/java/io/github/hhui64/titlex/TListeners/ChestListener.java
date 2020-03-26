@@ -1,27 +1,22 @@
 package io.github.hhui64.titlex.TListeners;
 
-import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.hhui64.titlex.TitleX;
+import io.github.hhui64.titlex.TConfig.ConfigManager;
 
 public class ChestListener implements Listener {
   @EventHandler
-  public void onInventoryOpen(InventoryOpenEvent event) {
-    // TODO: some...
-  }
-
-  @EventHandler
   public void onInventoryClick(InventoryClickEvent event) {
+    if (event.isCancelled())
+      return;
     Inventory inventory = event.getInventory();
     if (isTitleChest(inventory)) {
       Player player = (Player) event.getWhoClicked();
@@ -29,10 +24,10 @@ public class ChestListener implements Listener {
         if (event.getRawSlot() < inventory.getSize()) {
           ItemStack currentItem = event.getCurrentItem();
           if (currentItem != null && currentItem.getType() == Material.NAME_TAG) {
-            if (inventory.getTitle().equalsIgnoreCase(TitleX.instance.configManager.getMessage("list-chest"))) {
+            if (inventory.getTitle().equalsIgnoreCase(ConfigManager.getMessage("list-chest"))) {
               TitleX.instance.listChest.nameTagClick(player, inventory, currentItem, event.getClick());
             }
-            if (inventory.getTitle().equalsIgnoreCase(TitleX.instance.configManager.getMessage("shop-chest"))) {
+            if (inventory.getTitle().equalsIgnoreCase(ConfigManager.getMessage("shop-chest"))) {
               // TODO: shop chest item click
             }
           }
@@ -49,6 +44,8 @@ public class ChestListener implements Listener {
 
   @EventHandler
   public void onInventoryDrag(InventoryDragEvent event) {
+    if (event.isCancelled())
+      return;
     Inventory inventory = event.getInventory();
     if (isTitleChest(inventory)) {
       if (event.getWhoClicked() instanceof Player) {
@@ -69,7 +66,7 @@ public class ChestListener implements Listener {
    * @return
    */
   private boolean isTitleChest(Inventory inventory) {
-    return inventory.getTitle().equalsIgnoreCase(TitleX.instance.configManager.getMessage("list-chest"))
-        || inventory.getTitle().equalsIgnoreCase(TitleX.instance.configManager.getMessage("shop-chest"));
+    return inventory.getTitle().equalsIgnoreCase(ConfigManager.getMessage("list-chest"))
+        || inventory.getTitle().equalsIgnoreCase(ConfigManager.getMessage("shop-chest"));
   }
 }

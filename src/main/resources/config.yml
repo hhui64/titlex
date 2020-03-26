@@ -15,8 +15,8 @@ list-chest:
   slot: 3
 shop-chest:
   slot: 3
-# 检查设置
-check:
+# 刷新设置
+refresh-on:
   # 进入服务器时检查
   on-join: true
   # 退出服务器时检查
@@ -26,11 +26,11 @@ check:
   # 切换世界时检查
   on-player-change-world: true
 # 称号设置
-title:
+prefix-setting:
   # 称号拼接之间的连接字符
-  join: ''
+  join-char: ''
   # 称号拼接完成后，结尾添加的扩展字符
-  extend-prefix: ' '
+  extend-string: ' '
   # 称号显示设置
   display:
     # TAB 列表

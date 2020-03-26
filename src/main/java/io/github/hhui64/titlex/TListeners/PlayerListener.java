@@ -1,7 +1,5 @@
 package io.github.hhui64.titlex.TListeners;
 
-import java.util.Set;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,13 +9,15 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import io.github.hhui64.titlex.TitleX;
+import io.github.hhui64.titlex.TConfig.ConfigManager;
+import io.github.hhui64.titlex.Ttitle.PlayerTitleManager;
 
 public class PlayerListener implements Listener {
   @EventHandler
   public void onJoin(PlayerJoinEvent event) {
     if (getFlagState("on-join")) {
       Player player = event.getPlayer();
-      check(player);
+      refresh(player);
     }
   }
 
@@ -25,7 +25,7 @@ public class PlayerListener implements Listener {
   public void onQuit(PlayerQuitEvent event) {
     if (getFlagState("on-quit")) {
       Player player = event.getPlayer();
-      check(player);
+      refresh(player);
     }
   }
 
@@ -33,7 +33,7 @@ public class PlayerListener implements Listener {
   public void onAsyncChat(AsyncPlayerChatEvent event) {
     if (getFlagState("on-chat")) {
       Player player = event.getPlayer();
-      check(player);
+      refresh(player);
     }
   }
 
@@ -41,29 +41,30 @@ public class PlayerListener implements Listener {
   public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
     if (getFlagState("on-player-change-world")) {
       Player player = event.getPlayer();
-      check(player);
+      refresh(player);
     }
   }
 
-  public void check(Player player) {
+  /**
+   * 刷新、清除指定玩家过期失效称号，并通过 vault 重新设置玩家称号
+   * 
+   * @param player
+   */
+  public void refresh(Player player) {
     if (player instanceof Player) {
-      Set<String> titles = TitleX.instance.configManager.getPlayerTitles(player);
-      for (String titleId: titles) {
-        // 根据 titleId 获取该称号ID在玩家库存中的状态信息
-        boolean timeStatus = TitleX.instance.configManager.getPlayerTitleTimeStatus(player, titleId);
-        // 过期了从玩家库存中删除称号ID节点
-        if (!timeStatus) {
-          // 删除并保存
-          TitleX.instance.configManager.delPlayerTitle(player, titleId);
-          TitleX.instance.configManager.saveConfig();
-        }
-      }
+      PlayerTitleManager.clearPlayerAllExpiredTitles(player);
+      ConfigManager.savePlayerData();
+      PlayerTitleManager.updatePlayerPrefix(player);
     }
-    // 刷新可用称号生成聊天前缀并设置
-    TitleX.instance.configManager.setPlayerActiveTitlesToChatPrefix(player);
   }
 
+  /**
+   * 获取检测 flag 的启用状态
+   * 
+   * @param name
+   * @return
+   */
   public boolean getFlagState(String name) {
-    return TitleX.instance.getConfig().getConfigurationSection("check").getBoolean(name);
+    return TitleX.instance.getConfig().getConfigurationSection("refresh-on").getBoolean(name);
   }
 }
