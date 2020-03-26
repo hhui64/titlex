@@ -1,15 +1,15 @@
 # 配置文件版本，请勿修改
 version: 1.1
-# MySQL 数据库设置
-mysql:
-  use: false
-  host: localhost
-  port: 3306
-  database: titlex
-  user: root
-  password: root
-# 是否使用 uuid
-use-uuid: true
+# # MySQL 数据库设置
+# mysql:
+#   use: false
+#   host: localhost
+#   port: 3306
+#   database: titlex
+#   user: root
+#   password: root
+# # 是否使用 uuid
+# use-uuid: true
 # 箱子容器设置
 list-chest:
   slot: 3
@@ -29,18 +29,18 @@ refresh-on:
 prefix-setting:
   # 称号拼接之间的连接字符
   join-char: ''
-  # 称号拼接完成后，结尾添加的扩展字符
-  extend-string: ' '
-  # 称号显示设置
-  display:
-    # TAB 列表
-    tab: false
-    # 聊天前缀
-    chat: true
-    # 玩家头顶
-    player: false
-  # 最大可以佩戴的称号数量 titlex.max-active.<group>
-  max-active:
-    default: 3
-    vip: 5
-    more: 10
+  # 玩家 prefix 结尾添加的扩展字符
+  extend-string: ''
+  # # 称号显示设置
+  # display:
+  #   # TAB 列表
+  #   tab: false
+  #   # 聊天前缀
+  #   chat: true
+  #   # 玩家头顶
+  #   player: false
+  # # 最大可以佩戴的称号数量 titlex.max-active.<group>
+  # max-active:
+  #   default: 3
+  #   vip: 5
+  #   more: 10

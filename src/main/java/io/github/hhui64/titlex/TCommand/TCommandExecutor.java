@@ -107,7 +107,14 @@ public class TCommandExecutor implements TabExecutor {
   }
 
   private void sendHelpMessage(CommandSender sender) {
-    sender.sendMessage(ConfigManager.getMessageList("help"));
+    String[] help = ConfigManager.getMessageList("help");
+    String[] opHelp = ConfigManager.getMessageList("op-help");
+    List<String> finalMsg = new ArrayList<String>();
+    finalMsg.addAll(Arrays.asList(help));
+    boolean r = (sender instanceof Player) ? VaultApi.permission.playerHas((Player) sender, "titlex.admin") : true;
+    if (r)
+      finalMsg.addAll(Arrays.asList(opHelp));
+    sender.sendMessage(finalMsg.toArray(new String[0]));
   }
 
   @Override
