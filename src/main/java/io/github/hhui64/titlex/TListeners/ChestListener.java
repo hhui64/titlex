@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import io.github.hhui64.titlex.TitleX;
@@ -18,16 +19,16 @@ public class ChestListener implements Listener {
     if (event.isCancelled())
       return;
     Inventory inventory = event.getInventory();
-    if (isTitleChest(inventory)) {
+    if (isTitleChest(event.getView())) {
       Player player = (Player) event.getWhoClicked();
       if (player instanceof Player) {
         if (event.getRawSlot() < inventory.getSize()) {
           ItemStack currentItem = event.getCurrentItem();
           if (currentItem != null && currentItem.getType() == Material.NAME_TAG) {
-            if (inventory.getTitle().equalsIgnoreCase(ConfigManager.getMessage("list-chest"))) {
+            if (event.getView().getTitle().equalsIgnoreCase(ConfigManager.getMessage("list-chest"))) {
               TitleX.instance.listChest.nameTagClick(player, inventory, currentItem, event.getClick());
             }
-            if (inventory.getTitle().equalsIgnoreCase(ConfigManager.getMessage("shop-chest"))) {
+            if (event.getView().getTitle().equalsIgnoreCase(ConfigManager.getMessage("shop-chest"))) {
               // TODO: shop chest item click
             }
           }
@@ -47,7 +48,7 @@ public class ChestListener implements Listener {
     if (event.isCancelled())
       return;
     Inventory inventory = event.getInventory();
-    if (isTitleChest(inventory)) {
+    if (isTitleChest(event.getView())) {
       if (event.getWhoClicked() instanceof Player) {
         for (int i = 0; i < inventory.getSize(); i++) {
           if (event.getRawSlots().contains(i)) {
@@ -65,8 +66,8 @@ public class ChestListener implements Listener {
    * @param inventory
    * @return
    */
-  private boolean isTitleChest(Inventory inventory) {
-    return inventory.getTitle().equalsIgnoreCase(ConfigManager.getMessage("list-chest"))
-        || inventory.getTitle().equalsIgnoreCase(ConfigManager.getMessage("shop-chest"));
+  private boolean isTitleChest(InventoryView inventoryView) {
+    return inventoryView.getTitle().equalsIgnoreCase(ConfigManager.getMessage("list-chest"))
+        || inventoryView.getTitle().equalsIgnoreCase(ConfigManager.getMessage("shop-chest"));
   }
 }

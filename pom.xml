@@ -30,7 +30,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>3.3</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
@@ -46,9 +46,9 @@
   </build>
   <repositories>
     <repository>
-      <id>lss233-minecraft</id>
+      <id>minecraft</id>
       <name>Lss233's Minecraft Repository</name>
-      <url>http://lss233.littleservice.cn/repositories/minecraft</url>
+      <url>https://crystal.app.lss233.com/repositories/minecraft</url>
     </repository>
     <repository>
       <id>bukkit-repo</id>
@@ -56,27 +56,27 @@
     </repository>
     <repository>
       <id>vault-repo</id>
-      <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+      <url>https://nexus.hc.to/content/repositories/pub_releases</url>
     </repository>
   </repositories>
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.12-R0.1-SNAPSHOT</version>
+      <version>1.15-R0.1-SNAPSHOT</version>
       <type>jar</type>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.12-R0.1-SNAPSHOT</version>
+      <version>1.15-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>VaultAPI</artifactId>
-      <version>1.6</version>
+      <version>1.7</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
