@@ -31,9 +31,8 @@ public class ListChest extends Chest {
   public void reset(Player player, Inventory inventoryChest) {
     inventoryChest.clear();
     ItemStack[] nameTagItemStackArray = generateNameTagItemStackArray(player);
-    if (nameTagItemStackArray != null) {
+    if (nameTagItemStackArray != null)
       inventoryChest.addItem(nameTagItemStackArray);
-    }
   }
 
   /**
@@ -73,10 +72,6 @@ public class ListChest extends Chest {
 
     // 设置玩家聊天前缀，此时称号正式生效
     PlayerTitleManager.updatePlayerPrefix(player);
-
-    // 发送公屏佩戴提示
-    // player.sendMessage(!use ? ("§e你现在戴上了 §r" + title + "§r§e 称号") : ("§7你摘下了 §r"
-    // + title + "§r§7 称号"));
   }
 
   /**
@@ -94,6 +89,11 @@ public class ListChest extends Chest {
     List<ItemStack> ItemStackList = new ArrayList<>(playerAllTitles.size());
     for (PlayerTitle playerTitle : playerAllTitles) {
       List<String> lore = new ArrayList<String>();
+      // 添加称号说明
+      if (!playerTitle.localTitle.profile.isEmpty()) {
+        lore.addAll(playerTitle.localTitle.profile);
+        lore.add(" ");
+      }
       // 有效时间
       String dateText = playerTitle.exp < 0 ? ConfigManager.getMessage("is-long")
           : (playerTitle.isExpired() ? ConfigManager.getMessage("is-exp")
@@ -108,7 +108,7 @@ public class ListChest extends Chest {
       }
       // 称号id信息
       lore.add("§7id:" + playerTitle.localTitle.id);
-      ItemStackList.add(TitleX.instance.nameTag.create(playerTitle.localTitle.getTitleString(), lore,
+      ItemStackList.add(NameTag.create(playerTitle.localTitle.getTitleString(), lore,
           playerTitle.isForceUse || playerTitle.isUse));
     }
     return ItemStackList.toArray(new ItemStack[0]);
