@@ -52,8 +52,8 @@ public class PlayerListener implements Listener {
    */
   public void refresh(Player player) {
     if (player instanceof Player) {
-      PlayerTitleManager.clearPlayerAllExpiredTitles(player);
-      ConfigManager.savePlayerData();
+      if (PlayerTitleManager.clearPlayerAllExpiredTitles(player) > 0)
+        ConfigManager.savePlayerData();
       PlayerTitleManager.updatePlayerPrefix(player);
     }
   }
