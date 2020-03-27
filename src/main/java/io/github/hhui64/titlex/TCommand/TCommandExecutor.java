@@ -203,6 +203,7 @@ public class TCommandExecutor implements TabExecutor {
           int intDays = Integer.parseInt(days);
           PlayerTitleManager.addPlayerCurrentTitle(player, id, intDays, isForceUse, false);
           ConfigManager.savePlayerData();
+          PlayerTitleManager.updatePlayerPrefix(player);
           sender.sendMessage(ConfigManager.getMessage("give-success", id, playerName, intDays, isForceUse));
           player.sendMessage(ConfigManager.getMessage("get-title"));
         } catch (NumberFormatException e) {
@@ -222,10 +223,8 @@ public class TCommandExecutor implements TabExecutor {
     Player player = Bukkit.getPlayerExact(playerName);
     if (player != null && player.isOnline()) {
       if (PlayerTitleManager.getPlayerCurrentTitle(player, id) != null) {
-        // 从配置文件中删除，并保存
         PlayerTitleManager.delPlayerCurrentTitle(player, id);
         ConfigManager.savePlayerData();
-        // 刷新可用称号生成聊天前缀并设置
         PlayerTitleManager.updatePlayerPrefix(player);
         sender.sendMessage(ConfigManager.getMessage("remove-success", id, playerName));
       } else {
