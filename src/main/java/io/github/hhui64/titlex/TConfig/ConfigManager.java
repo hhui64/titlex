@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -54,7 +55,6 @@ public class ConfigManager {
   /**
    * 实时保存 save.yml 数据
    */
-  @Deprecated
   public static void savePlayerData() {
     try {
       save.save(new File(TitleX.instance.getDataFolder(), "save.yml"));
@@ -95,7 +95,7 @@ public class ConfigManager {
    * 获取自定义 yml 文件 FileConfiguration
    * 
    * @param parent 路径
-   * @param child 文件名
+   * @param child  文件名
    * @return
    */
   public static YamlConfiguration getYamlConfiguration(File parent, String child) {
@@ -134,7 +134,8 @@ public class ConfigManager {
    * @return
    */
   public static String getMessage(String key, Object... format) {
-    return ChatColor.translateAlternateColorCodes('&' ,format.length > 0 ? String.format(messages.getString(key), format) : messages.getString(key));
+    return ChatColor.translateAlternateColorCodes('&',
+        format.length > 0 ? String.format(messages.getString(key), format) : messages.getString(key));
   }
 
   /**
@@ -144,6 +145,7 @@ public class ConfigManager {
    * @return
    */
   public static String[] getMessageList(String key) {
-    return messages.getList(key).toArray(new String[0]);
+    return messages.getStringList(key).stream().map(item -> ChatColor.translateAlternateColorCodes('&', item))
+        .collect(Collectors.toList()).toArray(new String[0]);
   }
 }
