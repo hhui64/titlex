@@ -2,32 +2,32 @@
 #             帮助信息           #
 #################################
 help:
-- '§e/ttx list  §7-  §f打开称号陈列柜'
-- '§e/ttx shop  §7-  §f打开称号商城'
-- '§e/ttx help  §7-  §f查看指令帮助内容'
+- '&e/ttx list  &7-  &f打开称号陈列柜'
+- '&e/ttx shop  &7-  &f打开称号商城'
+- '&e/ttx help  &7-  &f查看指令帮助内容'
 op-help:
-- '§e/ttx give <玩家名> <称号ID> [天数]  §7-  §f授予玩家指定称号ID'
-- '§e/ttx remove <玩家名> <称号ID>  §7-  §f移除玩家指定称号ID'
-- '§e/ttx clear <玩家名>  §7-  §f清除玩家的所有称号'
-- '§e/ttx refresh [玩家名]  §7-  §f刷新指定玩家或所有玩家的称号'
-- '§e/ttx reload  §7-  §f重新加载插件'
+- '&e/ttx give <玩家名> <称号ID> [天数]  &7-  &f授予玩家指定称号ID'
+- '&e/ttx remove <玩家名> <称号ID>  &7-  &f移除玩家指定称号ID'
+- '&e/ttx clear <玩家名>  &7-  &f清除玩家的所有称号'
+- '&e/ttx refresh [玩家名]  &7-  &f刷新指定玩家或所有玩家的称号'
+- '&e/ttx reload  &7-  &f重新加载插件'
 
 #################################
 #           指令提示信息          #
 #################################
-no-permission: '§c你没有权限这样做'
-no-player: '§c玩家不存在或已离线'
-give-success: '§a成功将称号 %s 添加至玩家 %s 的库存中 (%s天)'
-remove-success: '§a成功将称号ID %s 从玩家 %s 的库存中移除'
-clear-success: '§a成功清除玩家 %s 的所有称号库存'
-refreshing: '§e正在刷新所有玩家的称号...'
-refreshing-success: '§a刷新成功'
-reloading: '§e正在重新载入插件...'
-reloading-success: '§a重新载入成功'
-get-title: '§a你被授予了一个称号，请打开称号陈列柜佩戴吧！'
-invalid-date: '§c请输入正确的天数'
-no-title: '§c称号库中没有这个称号ID'
-player-no-title: '§c该玩家库存中没有这个称号ID'
+no-permission: '&c你没有权限这样做'
+no-player: '&c玩家不存在或已离线'
+give-success: '&a成功将称号 %s 添加至玩家 %s 的库存中 (%s天)'
+remove-success: '&a成功将称号ID %s 从玩家 %s 的库存中移除'
+clear-success: '&a成功清除玩家 %s 的所有称号库存'
+refreshing: '&e正在刷新所有玩家的称号...'
+refreshing-success: '&a刷新成功'
+reloading: '&e正在重新载入插件...'
+reloading-success: '&a重新载入成功'
+get-title: '&a你被授予了一个称号，请打开称号陈列柜佩戴吧！'
+invalid-date: '&c请输入正确的天数'
+no-title: '&c称号库中没有这个称号ID'
+player-no-title: '&c该玩家库存中没有这个称号ID'
 
 #################################
 #           箱子标题文本          #
@@ -38,9 +38,9 @@ shop-chest: '称号商城'
 #################################
 #          命名牌文本信息         #
 #################################
-is-use: '§b已佩戴'
-is-force-use: '§b已佩戴 §c(不可取消)'
-date: '§f剩余时间: %s'
-is-day: '§6%s天'
-is-exp: '§c已过期'
-is-long: '§a永久'
+is-use: '&b已佩戴'
+is-force-use: '&b已佩戴 &c(不可取消)'
+date: '&f剩余时间: %s'
+is-day: '&6%s天'
+is-exp: '&c已过期'
+is-long: '&a永久'

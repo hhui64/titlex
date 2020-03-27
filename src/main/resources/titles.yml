@@ -1,6 +1,6 @@
 mrt:
-  container: '§7§l[§r%s§7§l]'
-  value: '§6名人堂'
+  container: '&7&l[&r%s&7&l]'
+  value: '&6名人堂'
   profile:
   - '在此服有过突出贡献'
   - '且影响力较大的玩家'
@@ -8,20 +8,23 @@ mrt:
   permanent-price: 64800
   min-buy-days: 1
   max-buy-days: 30
+  can-buy: false
 zuan:
-  container: '§7§l[§r%s§7§l]'
-  value: '§a祖安狂人'
+  container: '&7&l[&r%s&7&l]'
+  value: '&a祖安狂人'
   profile: []
   one-day-price: 1288
   permanent-price: 364800
   min-buy-days: 1
   max-buy-days: -1
+  can-buy: false
 yafd:
-  container: '§7§l[§r%s§7§l]'
-  value: '§9用爱发电'
+  container: '&7&l[&r%s&7&l]'
+  value: '&9用爱发电'
   profile:
   - '向此服捐赠过的玩家'
   one-day-price: -1
   permanent-price: -1
   min-buy-days: 1
   max-buy-days: -1
+  can-buy: false
