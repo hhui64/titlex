@@ -85,7 +85,14 @@ public class PlayerTitleManager {
   }
 
   /**
+   * <pre>
    * 获取玩家所拥有的称号，并拼接为聊天前缀字符串
+   * 
+   * 因为通过 vault.chat 设置玩家前缀的权重值大于
+   * 用户组的前缀，所以必须获取该玩家所属组的组前缀
+   * 将其添加在拼接完成的称号字符串结尾以正确显示玩
+   * 家的组前缀。
+   * </pre>
    * 
    * @param player
    * @return 拼接完成的称号字符串
@@ -119,14 +126,14 @@ public class PlayerTitleManager {
    */
   public static void addPlayerCurrentTitle(Player player, String id, int days, boolean isForceUse, boolean isUse) {
     String uuid = player.getUniqueId().toString();
-    ConfigurationSection configurationSection = ConfigManager.save.createSection(uuid + ".titles." + id);
+    ConfigurationSection c = ConfigManager.save.createSection(uuid + ".titles." + id);
     int nowTime = (int) (System.currentTimeMillis() / 1000);
     int expTime = days < 0 ? -1 : (nowTime + days * 24 * 60 * 60);
-    configurationSection.set("force-use", isForceUse);
-    configurationSection.set("use", false);
-    configurationSection.set("iat", nowTime);
-    configurationSection.set("exp", expTime);
-    ConfigManager.save.set(uuid + ".titles." + id, configurationSection);
+    c.set("force-use", isForceUse);
+    c.set("use", isUse);
+    c.set("iat", nowTime);
+    c.set("exp", expTime);
+    ConfigManager.save.set(uuid + ".titles." + id, c);
   }
 
   /**
@@ -170,13 +177,17 @@ public class PlayerTitleManager {
    * 清空玩家所有已过期的称号ID
    * 
    * @param player
+   * @return 已清除掉的称号个数
    */
-  public static void clearPlayerAllExpiredTitles(Player player) {
+  public static int clearPlayerAllExpiredTitles(Player player) {
     List<PlayerTitle> playerAllTitles = getPlayerAllTitles(player);
+    int i = 0;
     for (PlayerTitle playerTitle : playerAllTitles) {
       if (playerTitle.isExpired())
         delPlayerCurrentTitle(player, playerTitle.localTitle.id);
+        i++;
     }
+    return i;
   }
 
   /**
@@ -198,7 +209,7 @@ public class PlayerTitleManager {
     try {
       VaultApi.chat.setPlayerPrefix(player, getPlayerAllActiveTitlesPrefixString(player));
     } catch (Exception e) {
-      // player.sendMessage(getMessage("failed-to-set-player-prefix"));
+      // player.sendMessage(ConfigManager.getMessage("failed-to-set-player-prefix"));
     }
   }
 }
