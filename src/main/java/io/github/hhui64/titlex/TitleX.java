@@ -77,6 +77,5 @@ public class TitleX extends JavaPlugin {
     shopChest = new ShopChest(
         ConfigManager.getMessage("shop-chest"),
         getConfig().getConfigurationSection("shop-chest").getInt("slot"));
-    nameTag = new NameTag();
   }
 }

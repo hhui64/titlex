@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class NameTag {
-  public ItemStack create(String name, List<String> lore, Boolean isActive) {
+  public static ItemStack create(String name, List<String> lore, Boolean isActive) {
     ItemStack nameTag = new ItemStack(Material.NAME_TAG);
     ItemMeta meta = nameTag.getItemMeta();
     meta.setDisplayName(name);
