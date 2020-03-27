@@ -13,24 +13,18 @@ public class VaultApi {
   public static Chat chat = null;
 
   public static boolean init() {
-    // 获取权限系统实例
     RegisteredServiceProvider<Permission> permissionProvider = TitleX.instance.servicesManager
         .getRegistration(net.milkbowl.vault.permission.Permission.class);
-    if (permissionProvider != null) {
+    if (permissionProvider != null)
       permission = (Permission) permissionProvider.getProvider();
-    }
-    // 初始化聊天系统实例
     RegisteredServiceProvider<Chat> chatProvider = TitleX.instance.servicesManager
         .getRegistration(net.milkbowl.vault.chat.Chat.class);
-    if (chatProvider != null) {
+    if (chatProvider != null)
       chat = (Chat) chatProvider.getProvider();
-    }
-    // 初始化经济系统实例
     RegisteredServiceProvider<Economy> economyProvider = TitleX.instance.servicesManager
         .getRegistration(net.milkbowl.vault.economy.Economy.class);
-    if (economyProvider != null) {
+    if (economyProvider != null)
       economy = (Economy) economyProvider.getProvider();
-    }
     return permission != null && economy != null && chat != null;
   }
 }

@@ -17,6 +17,7 @@ public class PlayerTitle {
 
   /**
    * 获取剩余天数
+   * 
    * @return 整数型天数，不足一天的按一天计算。
    */
   public int getEffectiveDays() {
@@ -27,6 +28,7 @@ public class PlayerTitle {
 
   /**
    * 是否过期
+   * 
    * @return 过期返回 true，有效返回 false。
    */
   public boolean isExpired() {
