@@ -19,7 +19,7 @@ public class LocalTitleManager {
     if (c != null) {
       return new LocalTitle(c, id, c.getString("container"), c.getString("value"), c.getStringList("profile"),
           c.getDouble("one-day-price"), c.getDouble("permanent-price"), c.getInt("min-buy-days"),
-          c.getInt("max-buy-days"));
+          c.getInt("max-buy-days"), c.getBoolean("can-buy"));
     }
     return null;
   }
@@ -35,11 +35,12 @@ public class LocalTitleManager {
    * @param permanentPrice
    * @param minBuyDays
    * @param maxBuyDays
+   * @param isCanBuy
    * @return
    */
   public static Title createTitle(String id, String container, String value, List<String> profile, double oneDayPrice,
-      double permanentPrice, int minBuyDays, int maxBuyDays) {
-    return new Title(id, container, value, profile, oneDayPrice, permanentPrice, minBuyDays, maxBuyDays);
+      double permanentPrice, int minBuyDays, int maxBuyDays, boolean isCanBuy) {
+    return new Title(id, container, value, profile, oneDayPrice, permanentPrice, minBuyDays, maxBuyDays, isCanBuy);
   }
 
   /**
