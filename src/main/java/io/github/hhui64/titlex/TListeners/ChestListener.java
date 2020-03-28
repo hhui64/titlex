@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.hhui64.titlex.TitleX;
 import io.github.hhui64.titlex.TConfig.ConfigManager;
+import io.github.hhui64.titlex.TMessage.Message;
 
 public class ChestListener implements Listener {
   @EventHandler
@@ -25,10 +26,10 @@ public class ChestListener implements Listener {
         if (event.getRawSlot() < inventory.getSize()) {
           ItemStack currentItem = event.getCurrentItem();
           if (currentItem != null && currentItem.getType() == Material.NAME_TAG) {
-            if (event.getView().getTitle().equalsIgnoreCase(ConfigManager.getMessage("list-chest"))) {
+            if (event.getView().getTitle().equalsIgnoreCase(Message.getMessage("list-chest"))) {
               TitleX.instance.listChest.nameTagClick(player, inventory, currentItem, event.getClick());
             }
-            if (event.getView().getTitle().equalsIgnoreCase(ConfigManager.getMessage("shop-chest"))) {
+            if (event.getView().getTitle().equalsIgnoreCase(Message.getMessage("shop-chest"))) {
               // TODO: shop chest item click
             }
           }
@@ -67,7 +68,7 @@ public class ChestListener implements Listener {
    * @return
    */
   private boolean isTitleChest(InventoryView inventoryView) {
-    return inventoryView.getTitle().equalsIgnoreCase(ConfigManager.getMessage("list-chest"))
-        || inventoryView.getTitle().equalsIgnoreCase(ConfigManager.getMessage("shop-chest"));
+    return inventoryView.getTitle().equalsIgnoreCase(Message.getMessage("list-chest"))
+        || inventoryView.getTitle().equalsIgnoreCase(Message.getMessage("shop-chest"));
   }
 }

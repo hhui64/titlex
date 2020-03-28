@@ -209,7 +209,7 @@ public class PlayerTitleManager {
     try {
       VaultApi.chat.setPlayerPrefix(player, getPlayerAllActiveTitlesPrefixString(player));
     } catch (Exception e) {
-      // player.sendMessage(ConfigManager.getMessage("failed-to-set-player-prefix"));
+      // player.sendMessage(Message.getMessage("failed-to-set-player-prefix"));
     }
   }
 }

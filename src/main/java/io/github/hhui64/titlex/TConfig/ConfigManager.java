@@ -6,9 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.stream.Collectors;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -124,28 +122,5 @@ public class ConfigManager {
     }
     TitleX.instance.getLogger().info("Loading extend configs(" + child + ") succeeded.");
     return YamlConfiguration.loadConfiguration(file);
-  }
-
-  /**
-   * 获取语言文件的指定 key value
-   * 
-   * @param key
-   * @param format
-   * @return
-   */
-  public static String getMessage(String key, Object... format) {
-    return ChatColor.translateAlternateColorCodes('&',
-        format.length > 0 ? String.format(messages.getString(key), format) : messages.getString(key));
-  }
-
-  /**
-   * 获取语言文件 list
-   * 
-   * @param key
-   * @return
-   */
-  public static String[] getMessageList(String key) {
-    return messages.getStringList(key).stream().map(item -> ChatColor.translateAlternateColorCodes('&', item))
-        .collect(Collectors.toList()).toArray(new String[0]);
   }
 }

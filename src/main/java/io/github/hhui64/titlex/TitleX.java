@@ -10,24 +10,18 @@ import io.github.hhui64.titlex.TCommand.TCommandExecutor;
 import io.github.hhui64.titlex.TConfig.ConfigManager;
 import io.github.hhui64.titlex.THook.VaultApi;
 import io.github.hhui64.titlex.TItem.ListChest;
-import io.github.hhui64.titlex.TItem.NameTag;
 import io.github.hhui64.titlex.TItem.ShopChest;
 import io.github.hhui64.titlex.TListeners.ChestListener;
 import io.github.hhui64.titlex.TListeners.PlayerListener;
+import io.github.hhui64.titlex.TMessage.Message;
 
 public class TitleX extends JavaPlugin {
   public static TitleX instance;
-
   public PluginManager pluginManager = getServer().getPluginManager();
   public ServicesManager servicesManager = getServer().getServicesManager();
-
-  public VaultApi vaultApi;
-
   public TCommandExecutor tCommandExecutor;
-  public ConfigManager configManager;
   public ListChest listChest;
   public ShopChest shopChest;
-  public NameTag nameTag;
 
   public TitleX() {
     instance = this;
@@ -49,11 +43,12 @@ public class TitleX extends JavaPlugin {
   @Override
   public void onEnable() {
     // Hook vault-api
-    getLogger().info("Hooking vault-api...");
+    getLogger().info("Hooking Vault...");
     if (VaultApi.init()) {
-      getLogger().info("Succeeded to hook vault-api.");
+      getLogger().info("Vault hooked.");
     } else {
-      getLogger().info("Failed to hook vault-api! is installed?");
+      getLogger().info("Hook Vault failed! Are you sure it is installed?");
+      pluginManager.disablePlugin(pluginManager.getPlugin("TitleX"));
     }
     // 注册命令处理器
     tCommandExecutor = new TCommandExecutor();
@@ -65,17 +60,16 @@ public class TitleX extends JavaPlugin {
 
   @Override
   public void onDisable() {
-    ConfigManager.saveAllData();
+    // ConfigManager.savePlayerData();
   }
 
   /**
    * 初始化实例化对象
    */
   public void init() {
-    listChest = new ListChest(ConfigManager.getMessage("list-chest"),
+    listChest = new ListChest(Message.getMessage("list-chest"),
         getConfig().getConfigurationSection("list-chest").getInt("slot"));
-    shopChest = new ShopChest(
-        ConfigManager.getMessage("shop-chest"),
+    shopChest = new ShopChest(Message.getMessage("shop-chest"),
         getConfig().getConfigurationSection("shop-chest").getInt("slot"));
   }
 }

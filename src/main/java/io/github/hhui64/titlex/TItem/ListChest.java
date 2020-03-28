@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import io.github.hhui64.titlex.TitleX;
 import io.github.hhui64.titlex.TConfig.ConfigManager;
+import io.github.hhui64.titlex.TMessage.Message;
 import io.github.hhui64.titlex.Ttitle.PlayerTitle;
 import io.github.hhui64.titlex.Ttitle.PlayerTitleManager;
 
@@ -95,16 +96,16 @@ public class ListChest extends Chest {
         lore.add(" ");
       }
       // 有效时间
-      String dateText = playerTitle.exp < 0 ? ConfigManager.getMessage("is-long")
-          : (playerTitle.isExpired() ? ConfigManager.getMessage("is-exp")
-              : ConfigManager.getMessage("is-day", String.valueOf(playerTitle.getEffectiveDays())));
-      lore.add(ConfigManager.getMessage("date", dateText));
+      String dateText = playerTitle.exp < 0 ? Message.getMessage("is-long")
+          : (playerTitle.isExpired() ? Message.getMessage("is-exp")
+              : Message.getMessage("is-day", String.valueOf(playerTitle.getEffectiveDays())));
+      lore.add(Message.getMessage("date", dateText));
       lore.add(" ");
       // 佩戴状态
       if (playerTitle.isForceUse) {
-        lore.add(ConfigManager.getMessage("is-force-use"));
+        lore.add(Message.getMessage("is-force-use"));
       } else if (playerTitle.isUse) {
-        lore.add(ConfigManager.getMessage("is-use"));
+        lore.add(Message.getMessage("is-use"));
       }
       // 称号id信息
       lore.add("§7id:" + playerTitle.localTitle.id);

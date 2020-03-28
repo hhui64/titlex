@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import io.github.hhui64.titlex.TitleX;
 import io.github.hhui64.titlex.TConfig.ConfigManager;
 import io.github.hhui64.titlex.THook.VaultApi;
+import io.github.hhui64.titlex.TMessage.Message;
 import io.github.hhui64.titlex.Ttitle.LocalTitleManager;
 import io.github.hhui64.titlex.Ttitle.PlayerTitleManager;
 
@@ -107,8 +108,8 @@ public class TCommandExecutor implements TabExecutor {
   }
 
   private void sendHelpMessage(CommandSender sender) {
-    String[] help = ConfigManager.getMessageList("help");
-    String[] opHelp = ConfigManager.getMessageList("op-help");
+    String[] help = Message.getMessageList("help");
+    String[] opHelp = Message.getMessageList("op-help");
     List<String> finalMsg = new ArrayList<String>();
     finalMsg.addAll(Arrays.asList(help));
     boolean r = (sender instanceof Player) ? VaultApi.permission.playerHas((Player) sender, "titlex.admin") : true;
@@ -175,13 +176,12 @@ public class TCommandExecutor implements TabExecutor {
     boolean r = (sender instanceof Player) ? VaultApi.permission.playerHas((Player) sender, p) : true;
     if ((sender instanceof Player)) {
       if (!(((Player) sender).isOnline())) {
-        sender.sendMessage(ConfigManager.getMessage("no-player"));
+        sender.sendMessage(Message.getMessage("no-player"));
         return false;
       }
     }
-    if (!r) {
-      sender.sendMessage(ConfigManager.getMessage("no-permission"));
-    }
+    if (!r)
+      sender.sendMessage(Message.getMessage("no-permission"));
     return r;
   }
 
@@ -204,16 +204,17 @@ public class TCommandExecutor implements TabExecutor {
           PlayerTitleManager.addPlayerCurrentTitle(player, id, intDays, isForceUse, false);
           ConfigManager.savePlayerData();
           PlayerTitleManager.updatePlayerPrefix(player);
-          sender.sendMessage(ConfigManager.getMessage("give-success", id, playerName, intDays, isForceUse));
-          player.sendMessage(ConfigManager.getMessage("get-title"));
+          sender.sendMessage(Message.getMessage("give-success", id, playerName, intDays, isForceUse));
+          // 向玩家发送获得称号的提示信息
+          player.sendMessage(Message.getMessage("get-title"));
         } catch (NumberFormatException e) {
-          sender.sendMessage(ConfigManager.getMessage("invalid-date"));
+          sender.sendMessage(Message.getMessage("invalid-date"));
         }
       } else {
-        sender.sendMessage(ConfigManager.getMessage("no-title"));
+        sender.sendMessage(Message.getMessage("no-title"));
       }
     } else {
-      sender.sendMessage(ConfigManager.getMessage("no-player"));
+      sender.sendMessage(Message.getMessage("no-player"));
     }
   }
 
@@ -226,12 +227,12 @@ public class TCommandExecutor implements TabExecutor {
         PlayerTitleManager.delPlayerCurrentTitle(player, id);
         ConfigManager.savePlayerData();
         PlayerTitleManager.updatePlayerPrefix(player);
-        sender.sendMessage(ConfigManager.getMessage("remove-success", id, playerName));
+        sender.sendMessage(Message.getMessage("remove-success", id, playerName));
       } else {
-        sender.sendMessage(ConfigManager.getMessage("player-no-title"));
+        sender.sendMessage(Message.getMessage("player-no-title"));
       }
     } else {
-      sender.sendMessage(ConfigManager.getMessage("no-player"));
+      sender.sendMessage(Message.getMessage("no-player"));
     }
   }
 
@@ -242,22 +243,21 @@ public class TCommandExecutor implements TabExecutor {
     if (player != null && player.isOnline()) {
       PlayerTitleManager.clearPlayerAllTitles(player);
       ConfigManager.savePlayerData();
-      // 清空前缀内容
-      VaultApi.chat.setPlayerPrefix(player, null);
-      sender.sendMessage(ConfigManager.getMessage("clear-success", playerName));
+      PlayerTitleManager.updatePlayerPrefix(player);
+      sender.sendMessage(Message.getMessage("clear-success", playerName));
     } else {
-      sender.sendMessage(ConfigManager.getMessage("no-player"));
+      sender.sendMessage(Message.getMessage("no-player"));
     }
   }
 
   private void refresh(CommandSender sender) {
-    sender.sendMessage(ConfigManager.getMessage("refreshing"));
-    sender.sendMessage(ConfigManager.getMessage("refreshing-success"));
+    sender.sendMessage(Message.getMessage("refreshing"));
+    sender.sendMessage(Message.getMessage("refreshing-success"));
   }
 
   private void reload(CommandSender sender) {
-    sender.sendMessage(ConfigManager.getMessage("reloading"));
+    sender.sendMessage(Message.getMessage("reloading"));
     ConfigManager.reloadConfig();
-    sender.sendMessage(ConfigManager.getMessage("reloading-success"));
+    sender.sendMessage(Message.getMessage("reloading-success"));
   }
 }
